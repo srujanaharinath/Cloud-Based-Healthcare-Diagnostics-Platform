@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    
+    <!-- Datatables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <!-- Datatables Buttons CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap5.min.css">
+
+    <title>Healthcare Analysis</title>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: stretch; /* Stretch items vertically */
+        }
+
+        #form-container, #datatable-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .btn-primary {
+            border-radius: 0;
+        }
+
+        /* Datatable Customization */
+        table.dataTable thead th, table.dataTable thead td {
+            border-bottom: none;
+        }
+
+        /* Adjust datatable container */
+        .datatable-container {
+            overflow-x: auto; /* Allow horizontal scroll if needed */
+        }
+
+        .modal-dialog {
+        margin: 0;
+        max-width: none;
+        width: 100%;
+        height: 100%;
+    }
+
+        .modal-content {
+            height: 100%;
+            border-radius: 0;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            max-height: calc(100% - 56px); /* Adjust as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Container -->
+        <div id="form-container">
+            <h1 class="mb-4 text-center">Predictive Modelling for Healthcare Outcomes</h1>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="name">
+            </div>
+
+            <div class="mb-3">
+                <label for="age" class="form-label">Age:</label>
+                <input type="number" class="form-control" id="age">
+            </div>
+
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender:</label>
+                <select class="form-select" id="gender">
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="symptoms" class="form-label select-symptoms-label">Select Symptoms:</label>
+                <select class="form-select" name="field2" id="field2" multiple multiselect-search="true" multiselect-select-all="true" multiselect-max-items="3" onchange="updateValues()">
+                    <option value="0">Itching</option>
+                    <option value="1">Skin Rash</option>
+                    <option value="1">Nodal Skin Eruptions</option>
+                    <option value="1">Continuous Sneezing</option>
+                    <option value="1">Shivering</option>
+                    <option value="1">Chills</option>
+                    <option value="1">Joint Pain</option>
+                    <option value="1">Stomach Pain</option>
+                    <option value="1">Acidity</option>
+                    <option value="1">Ulcers On Tongue</option>
+                    <option value="1">Muscle Wasting</option>
+                    <option value="1">Vomiting</option>
+                    <option value="1">Burning Micturition</option>
+                    <option value="1">Spotting  urination</option>
+                    <option value="1">Fatigue</option>
+                    <option value="1">Weight Gain</option>
+                    <option value="1">Anxiety</option>
+                    <option value="1">Cold Hands And Feets</option>
+                    <option value="1">Mood Swings</option>
+                    <option value="1">Weight Loss</option>
+                    <option value="1">Restlessness</option>
+                    <option value="1">Lethargy</option>
+                    <option value="1">Patches In Throat</option>
+                    <option value="1">Irregular Sugar Level</option>
+                    <option value="1">Cough</option>
+                    <option value="1">High Fever</option>
+                    <option value="1">Sunken Eyes</option>
+                    <option value="1">Breathlessness</option>
+                    <option value="1">Sweating</option>
+                    <option value="1">Dehydration</option>
+                    <option value="1">Indigestion</option>
+                    <option value="1">Headache</option>
+                    <option value="1">Yellowish Skin</option>
+                    <option value="1">Dark Urine</option>
+                    <option value="1">Nausea</option>
+                    <option value="1">Loss Of Appetite</option>
+                    <option value="1">Pain Behind The Eyes</option>
+                    <option value="1">Back Pain</option>
+                    <option value="1">Constipation</option>
+                    <option value="1">Abdominal Pain</option>
+                    <option value="1">Diarrhoea</option>
+                    <option value="1">Mild Fever</option>
+                    <option value="1">Yellow Urine</option>
+                    <option value="1">Yellowing Of Eyes</option>
+                    <option value="1">Acute Liver Failure</option>
+                    <option value="1">Hypervolemia</option>
+                    <option value="1">Swelling Of Stomach</option>
+                    <option value="1">Swelled Lymph Nodes</option>
+                    <option value="1">Malaise</option>
+                    <option value="1">Blurred And Distorted Vision</option>
+                    <option value="1">Phlegm</option>
+                    <option value="1">Throat Irritation</option>
+                    <option value="1">Redness Of Eyes</option>
+                    <option value="1">Sinus Pressure</option>
+                    <option value="1">Runny Nose</option>
+                    <option value="1">Congestion</option>
+                    <option value="1">Chest Pain</option>
+                    <option value="1">Weakness In Limbs</option>
+                    <option value="1">Fast Heart Rate</option>
+                    <option value="1">Pain During Bowel Movements</option>
+                    <option value="1">Pain In Anal Region</option>
+                    <option value="1">Bloody Stool</option>
+                    <option value="1">Irritation In Anus</option>
+                    <option value="1">Neck Pain</option>
+                    <option value="1">Dizziness</option>
+                    <option value="1">Cramps</option>
+                    <option value="1">Bruising</option>
+                    <option value="1">Obesity</option>
+                    <option value="1">Swollen Legs</option>
+                    <option value="1">Swollen Blood Vessels</option>
+                    <option value="1">Puffy Face And Eyes</option>
+                    <option value="1">Enlarged Thyroid</option>
+                    <option value="1">Brittle Nails</option>
+                    <option value="1">Swollen Extremeties</option>
+                    <option value="1">Excessive Hunger</option>
+                    <option value="1">Extra Marital Contacts</option>
+                    <option value="1">Drying And Tingling Lips</option>
+                    <option value="1">Slurred Speech</option>
+                    <option value="1">Knee Pain</option>
+                    <option value="1">Hip Joint Pain</option>
+                    <option value="1">Muscle Weakness</option>
+                    <option value="1">Stiff Neck</option>
+                    <option value="1">Swelling Joints</option>
+                    <option value="1">Movement Stiffness</option>
+                    <option value="1">Spinning Movements</option>
+                    <option value="1">Loss Of Balance</option>
+                    <option value="1">Unsteadiness</option>
+                    <option value="1">Weakness Of One Body Side</option>
+                    <option value="1">Loss Of Smell</option>
+                    <option value="1">Bladder Discomfort</option>
+                    <option value="1">Foul Smell Of urine</option>
+                    <option value="1">Continuous Feel Of Urine</option>
+                    <option value="1">Passage Of Gases</option>
+                    <option value="1">Internal Itching</option>
+                    <option value="1">Toxic Look (typhos)</option>
+                    <option value="1">Depression</option>
+                    <option value="1">Irritability</option>
+                    <option value="1">Muscle Pain</option>
+                    <option value="1">Altered Sensorium</option>
+                    <option value="1">Red Spots Over Body</option>
+                    <option value="1">Belly Pain</option>
+                    <option value="1">Abnormal Menstruation</option>
+                    <option value="1">Dischromic  Patches</option>
+                    <option value="1">Watering From Eyes</option>
+                    <option value="1">Increased Appetite</option>
+                    <option value="1">Polyuria</option>
+                    <option value="1">Family History</option>
+                    <option value="1">Mucoid Sputum</option>
+                    <option value="1">Rusty Sputum</option>
+                    <option value="1">Lack Of Concentration</option>
+                    <option value="1">Visual Disturbances</option>
+                    <option value="1">Receiving Blood Transfusion</option>
+                    <option value="1">Receiving Unsterile Injections</option>
+                    <option value="1">Coma</option>
+                    <option value="1">Stomach Bleeding</option>
+                    <option value="1">Distention Of Abdomen</option>
+                    <option value="1">History Of Alcohol Consumption</option>
+                    <option value="1">Excess Fluid</option>
+                    <option value="1">Blood In Sputum</option>
+                    <option value="1">Prominent Veins On Calf</option>
+                    <option value="1">Palpitations</option>
+                    <option value="1">Painful Walking</option>
+                    <option value="1">Pus Filled Pimples</option>
+                    <option value="1">Blackheads</option>
+                    <option value="1">Scurring</option>
+                    <option value="1">Skin Peeling</option>
+                    <option value="1">Silver Like Dusting</option>
+                    <option value="1">Small Dents In Nails</option>
+                    <option value="1">Inflammatory Nails</option>
+                    <option value="1">Blister</option>
+                    <option value="1">Red Sore Around Nose</option>
+                    <option value="1">Yellow Crust Ooze</option>
+                    
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+            </div>
+        </div>
+        
+        <!-- Datatable Container -->
+        <div id="datatable-container">
+            <!-- Datatable -->
+            <div class="datatable-container">
+                <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Probability1</th>
+                            <th>Probability2</th>
+                            <th>Probability3</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be filled dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal Pop Up -->
+
+        <div id="popupModal" class="modal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Images</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <!-- Images will be dynamically added here -->
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loader -->
+          
+
+    <!--  -->
+    <!-- JavaScript files at the end of the body -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Datatables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<!-- Datatables Buttons JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.bootstrap5.min.js"></script>
+<!-- Datatables Buttons Print JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
+<script src="multiselect-dropdown.js"></script>
+<script>
+    
+    function updateValues() {
+        var selectElement = document.getElementById('field2');
+        var options = selectElement.options;
+        for (var i = 0; i < options.length; i++) {
+            options[i].value = options[i].selected ? '1' : '0';
+        }
+    }
+
+    function closeModal() {
+        $('#popupModal').modal('hide');
+    }
+
+
+
+    function submitForm() {
+        var name = document.getElementById('name').value;
+        var age = document.getElementById('age').value;
+        var gender = document.getElementById('gender').value;
+
+        var selectElement = document.getElementById('field2');
+        var options = selectElement.options;
+        var formData = {};
+
+        // Loop through all options and add them to formData with value 0
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+            formData[option.text] = 0;
+        }
+
+        // Loop through selected options and update their values to 1
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+            if (option.selected) {
+                formData[option.text] = 1;
+            }
+        }
+
+        // Add name, age, and gender to formData
+        formData["name"] = name;
+        formData["age"] = age;
+        formData["gender"] = gender;
+
+        console.log(formData);
+
+        // Call your API with the form data
+        fetch('http://127.0.0.1:8000/uploadGCP', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => {
+            // Handle response from server if needed
+            console.log(response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    function displayModal(response) {
+         // Get the container element where images will be displayed
+    var modalBody = $('#popupModal .modal-body');
+
+// Clear any existing content
+modalBody.empty();
+
+// Loop through the keys of the response object and display the images
+for (var key in response) {
+    if (response.hasOwnProperty(key)) {
+        // Create <img> element
+        var img = $('<img>', {
+            src: response[key],
+            alt: 'Image ' + key.substring(3) // Extract the number from the key (e.g., img1 -> 1)
+        });
+
+        // Append <img> element to modal body
+        modalBody.append(img);
+    }
+}
+
+// Display popup modal
+$('#popupModal').modal('show');
+}
+
+
+
+    $(document).ready(function() {
+        
+    // Call API to get data
+    fetch('http://127.0.0.1:8000/getData')
+    .then(response => response.json())
+    .then(data => {
+        // Populate DataTable with received data
+        $('#datatable').DataTable({
+            data: data,
+            columns: [
+                { data: 'name' },
+                { data: 'age' },
+                { data: 'gender' },
+                { data: 'Probability1' },
+                { data: 'Probability2' },
+                { data: 'Probability3' },
+                { // Create a column for buttons
+                    data: null,
+                    render: function(data, type, row) {
+                        // Return a button element
+                        return '<button class="btn btn-primary action-button" data-patient-id="' + row.patient_id + '">Visualize</button>';
+                    }
+                }
+            ],
+            dom: 'Bfrtip', // Change to 'Bfrtip' to display all buttons
+            buttons: [
+                'pdf', 'csv'
+            ],
+            ordering: false,
+            initComplete: function() {
+                // Attach event listener to the buttons after table initialization
+                $('#datatable tbody').on('click', '.action-button', function() {
+                    // Retrieve patient_id from the clicked button
+                    var patientId = $(this).data('patient-id');
+                    console.log('Patient ID:', patientId);
+                   
+                    
+                    // Call API to visualize data
+                    var apiUrl = 'http://127.0.0.1:8000/vizualizeData';
+                    $.ajax({
+                        type: 'POST',
+                        url: apiUrl,
+                        contentType: 'application/json',
+                        data: JSON.stringify({ patient_id: patientId }),
+                        success: function(response) {
+                            
+                            // Handle API response if needed
+                            console.log('API response:', response);
+                            displayModal(response);
+                            // Display the modal with images or perform any other action
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            // Handle error if needed
+                        }
+                    });
+                });
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+</body>
+</html>
